@@ -6,6 +6,7 @@ INSERT INTO authority(`name`, create_at, update_at) VALUES('USER', NOW(), NOW())
 -- USER
 
 INSERT INTO user_app(`email`, `password`, `fullname`,`enabled`, `restore_password`, create_at, update_at)  VALUES('henrymosquera.perez@gmail.com', '{bcrypt}$2a$10$OMTvsqnAnSiAja3pPD3oGujv/RtSnWwqrj/f5Yz3pelBt6fpBuQm.', 'HENRY MOSQUERA', true,'e5c94be4-9cfc-4b20-9122-ecddc06d22f2' , NOW(), NOW());
+INSERT INTO user_app(`email`, `password`, `fullname`,`enabled`, `restore_password`, create_at, update_at)  VALUES('nico311021@gmail.com', '{bcrypt}$2a$10$OMTvsqnAnSiAja3pPD3oGujv/RtSnWwqrj/f5Yz3pelBt6fpBuQm.', 'NICOLAS USECHE', true,'e1c94be4-9cfc-4b20-9122-ecddc06d22f1' , NOW(), NOW());
 
 -- USER_AUTHORITY
 
