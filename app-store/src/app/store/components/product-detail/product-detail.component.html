@@ -1,0 +1,60 @@
+<div *ngIf="product; else elseBlock">
+
+    <div class="row center-xs middle-xs w-100">
+
+        <div class="col-xs-12 col-md-4">
+            <img [src]="'assets/images/' + product.image" [alt]="product.code">
+        </div>
+
+        <div class="col-xs-12 col-md-4 p-5">
+
+            <mat-card class="shadow-hover text-align-justify">
+
+                <mat-card-header>
+                    <mat-card-title>DETAILS</mat-card-title>
+                    <mat-card-subtitle>CODE: {{product.code}}</mat-card-subtitle>
+                </mat-card-header>
+
+                <mat-divider></mat-divider>
+
+                <mat-card-content>
+                    <mat-list>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>folder</mat-icon>
+                            <div mat-line>
+                                <strong>NAME</strong>
+                            </div>
+                            <div mat-line>{{product.name}}</div>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>category</mat-icon>
+                            <div mat-line>
+                                <strong>CATEGORY</strong>
+                            </div>
+                            <div mat-line>{{product.category.name}}</div>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <mat-icon mat-list-icon>monetization_on</mat-icon>
+                            <div mat-line>
+                                <strong>PRICE</strong>
+                            </div>
+                            <div mat-line>{{product.price | currency}}</div>
+                        </mat-list-item>
+                    </mat-list>
+
+                    <p class="p-2"><strong>DESCRIPTION: </strong>{{product.description}}</p>
+
+                </mat-card-content>
+
+                <mat-card-actions class="text-align-center">
+                    <button mat-raised-button color="primary" (click)="onClickAddProductInUserCart(product);">Add to car</button>
+                </mat-card-actions>
+
+            </mat-card>
+        </div>
+    </div>
+</div>
+
+<ng-template #elseBlock>
+    <app-loading></app-loading>
+</ng-template>

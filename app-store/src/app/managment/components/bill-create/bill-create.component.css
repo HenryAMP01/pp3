@@ -1,0 +1,15 @@
+.mat-header-cell{
+    text-align: center;
+}
+
+.mat-cell{
+    padding: 16px;
+}
+
+.scroll{
+    overflow: auto;
+}
+
+.mat-card{
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+}

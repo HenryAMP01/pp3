@@ -1,0 +1,16 @@
+<div class="row w-100 center-xs">
+    <div class="col-xs-12 py-5">
+        <mat-form-field appearance="outline">
+            <mat-label>Find product by name</mat-label>
+            <input type="text" placeholder="Find product" aria-label="Find product" matInput
+                [formControl]="productField" [matAutocomplete]="autoCompleteProduct" (input)="onInputFieldProduct()">
+            <mat-icon matSuffix>search</mat-icon>
+            <mat-autocomplete #autoCompleteProduct="matAutocomplete"
+                (optionSelected)="onOptiondSelectedAutocompleteProduct($event)">
+                <mat-option *ngFor="let product of productOptions" [value]="product">
+                    {{product.code}} - {{product.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+</div>

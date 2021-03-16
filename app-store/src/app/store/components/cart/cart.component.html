@@ -1,0 +1,77 @@
+<app-search-product-to-bill (product)="onProductEmited($event)"></app-search-product-to-bill>
+<div class="row center-xs w-100" *ngIf="billsProducts.length > 0; else elseBlockProducts">
+    <div class="col-xs-12 col-md-6 px-3 py-3">
+        <div class="mat-elevation-z8 scroll">
+            <table mat-table [dataSource]="billsProducts" class="w-100">
+                <ng-container matColumnDef="Product">
+                    <th mat-header-cell *matHeaderCellDef> Product </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        <img [src]="('assets/images/' + billProduct.product.image)" [alt]="billProduct.product.image">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.product.name}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Price">
+                    <th mat-header-cell *matHeaderCellDef> Price </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.product.price | currency}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Amount">
+                    <th mat-header-cell *matHeaderCellDef> Amount </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.amount}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Choice amount">
+                    <th mat-header-cell *matHeaderCellDef> Choice amount </th>
+                    <td mat-cell *matCellDef="let billProduct; index as index">
+                        <div [formGroup]="billsProductsForm">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Amount</mat-label>
+                                <input matInput [formControlName]="billProduct.product.code" name="amount" type="number"
+                                    placeholder="Amount" min="1" required
+                                    (input)="onInputFieldAmount(billProduct, getReactiveControl(billProduct.product.code))" />
+                                <button mat-icon-button matSuffix color="warn" aria-label="Remove bill-product"
+                                    (click)="onClickSpliceBillProduct(index, billProduct.product.code)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <mat-error *ngIf="checkErrors(getReactiveControl(billProduct.product.code),'required')">
+                                    Amount is required
+                                </mat-error>
+                                <mat-error *ngIf="checkErrors(getReactiveControl(billProduct.product.code),'min')">
+                                    Minimun value is 1
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <h3>Total: {{ totalBill | currency}}</h3>
+        <a mat-raised-button color="primary" [routerLink]="['/user/profile']" [routerLinkActive]="['is-active']" aria-label="Go to my bills">
+            <mat-icon>save</mat-icon>
+            <span class="px-5">Paid</span>
+        </a>
+    </div>
+</div>
+<ng-template #elseBlockProducts>
+    <div class="row w-100 center-xs">
+        <div class="col-xs-12">
+            <h1>Aún no hay productos agregados :(</h1>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,107 @@
+<div *ngIf="pageRender; else elseBlock">
+
+    <div class="row center-xs middle-xs w-100">
+
+        <div class="col-xs-12 col-md-5 p-2">
+            <mat-paginator class="shadow" (page)="pageEvent($event)" [pageSizeOptions]="pageSizeOptions"
+                [pageSize]="pageRender.size" [length]="pageRender.totalElements" [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+
+        <div class="col-xs-12 col-md-5 p-2">
+            <a mat-raised-button color="primary" [routerLink]="['/managment/bills/create']">
+                <mat-icon>add</mat-icon>
+            </a>
+        </div>
+
+        <div class="col-xs-12 col-md-10 p-3">
+            <div class="mat-elevation-z8 scroll">
+                <table mat-table [dataSource]="bills" class="w-100">
+
+                    <ng-container matColumnDef="Id">
+                        <th mat-header-cell *matHeaderCellDef> Id </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.id}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="User">
+                        <th mat-header-cell *matHeaderCellDef> User </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.user.fullname}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Address">
+                        <th mat-header-cell *matHeaderCellDef> Address </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.address}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Total">
+                        <th mat-header-cell *matHeaderCellDef> Total </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.total | currency}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Payment">
+                        <th mat-header-cell *matHeaderCellDef> Payment </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.payment.name}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Paid out">
+                        <th mat-header-cell *matHeaderCellDef> Paid out </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.paidOut === true ? 'Paid out': 'Dont paid out'}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="State">
+                        <th mat-header-cell *matHeaderCellDef> State </th>
+                        <td mat-cell *matCellDef="let bill; index as index">
+                            <div [formGroup]="statesForm" *ngIf="bill.paidOut; else elseState">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>States</mat-label>
+                                    <mat-select [formControlName]="bill.id.toString(10)" (valueChange)="onChangeState($event, bill, index)">
+                                        <mat-option *ngFor="let state of states" [value]="state">
+                                            {{state.name}}</mat-option>
+                                    </mat-select>
+                                    <mat-hint> Actual state: {{bill.state.name}}</mat-hint>
+                                </mat-form-field>
+                            </div>
+                            <ng-template #elseState>
+                                {{bill.state.name}}
+                            </ng-template>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Create at">
+                        <th mat-header-cell *matHeaderCellDef> Create at </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.createAt | date: 'short'}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Update at">
+                        <th mat-header-cell *matHeaderCellDef> Update at </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.updateAt | date: 'short'}}
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #elseBlock>
+    <app-loading></app-loading>
+</ng-template>

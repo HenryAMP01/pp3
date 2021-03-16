@@ -1,0 +1,150 @@
+
+
+<mat-sidenav-container>
+
+    <mat-sidenav #sidenav>
+
+        <div class="row w-100 middle-xs text-align-center p-2">
+            <div class="col-xs-12 col-md-8">
+                <h2>Welcome!</h2>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <button mat-button (click)="sidenav.close()">
+                    <mat-icon aria-hidden="false" aria-label="Close sidenav">close</mat-icon>
+                </button>
+            </div>
+            <div class="col-xs-12">
+                <button mat-raised-button color="warn" (click)="logout(); sidenav.close()">
+                    Close session
+                </button>
+            </div>
+        </div>
+
+        <mat-nav-list role="navigation">
+            <div *appHasAnyAuthority="'USER'">
+                <h2 matSubheader>About me</h2>
+
+                <a mat-list-item [routerLink]="['/user/bills/all-page']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to my bills">
+                    <mat-icon>receipt_long</mat-icon>
+                    <span class="px-5">Bills</span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+                <a mat-list-item [routerLink]="['/user/profile']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to my profile">
+                    <mat-icon>account_circle</mat-icon>
+                    <span class="px-5">Profile</span>
+                </a>
+            </div>
+
+            <div *appHasAnyAuthority="'ADMIN'">
+                <h2 matSubheader>Managment</h2>
+
+                <a mat-list-item [routerLink]="['/managment/authorities/all-page']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to managment authorities">
+                    <mat-icon>security</mat-icon>
+                    <span class="px-5"> Authorities</span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+
+                <a mat-list-item [routerLink]="['/managment/bills/all-page']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to managment bills">
+                    <mat-icon>receipt_long</mat-icon>
+                    <span class="px-5">Bills</span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+                <a mat-list-item [routerLink]="['/managment/categories/all-page']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to managment categories">
+                    <mat-icon>category</mat-icon>
+                    <span class="px-5">Categories</span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+                <a mat-list-item [routerLink]="['/managment/payments/all-page']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to managment payments">
+                    <mat-icon>payments</mat-icon>
+                    <span class="px-5">Payments</span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+                <a mat-list-item [routerLink]="['/managment/products/all-page']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to managment products">
+                    <mat-icon>all_inbox</mat-icon>
+                    <span class="px-5">Products</span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+                <a mat-list-item [routerLink]="['/managment/states/all-page']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to managment states">
+                    <mat-icon>addchart</mat-icon>
+                    <span class="px-5">States</span>
+                </a>
+
+                <mat-divider></mat-divider>
+
+                <a mat-list-item [routerLink]="['/managment/users/all-page']" [routerLinkActive]="['is-active']"
+                    (click)="sidenav.close()" aria-hidden="false" aria-label="Go to managment users">
+                    <mat-icon>group</mat-icon>
+                    <span class="px-5">Users</span>
+                </a>
+            </div>
+
+        </mat-nav-list>
+
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+
+        <mat-toolbar color="primary">
+
+            <mat-toolbar-row>
+                <nav>
+                    <button mat-button (click)="sidenav.toggle()" *appIsLogin="isLogin">
+                        <mat-icon aria-hidden="false" aria-label="Open sidenav">menu</mat-icon>
+                    </button>
+
+                    <a mat-button [routerLink]="['']" [routerLinkActive]="['is-active']">
+                        <mat-icon>home</mat-icon>
+                        <span>Home</span>
+                    </a>
+                    <a mat-button [routerLink]="['/store/products/all-page']" [routerLinkActive]="['is-active']">
+                        <mat-icon>all_inbox</mat-icon>
+                        <span>Products</span>
+                    </a>
+                </nav>
+                <span class="spacer"></span>
+                <nav>
+                    <a mat-raised-button [matBadge]="(totalProductsInUserCart$ | async)" matBadgeColor="warn"
+                        [routerLink]="['/store/cart']" [routerLinkActive]="['is-active']">
+                        <mat-icon>shopping_cart</mat-icon>
+                        <span>Shopping cart</span>
+                    </a>
+                    <a mat-button [routerLink]="['/security/login']" [routerLinkActive]="['is-active']"
+                        *appIsLogin="!isLogin">
+                        <mat-icon>account_circle</mat-icon>
+                        <span>Login</span>
+                    </a>
+                    <a mat-button [routerLink]="['/security/register']" [routerLinkActive]="['is-active']"
+                        *appIsLogin="!isLogin">
+                        <mat-icon>admin_panel_settings</mat-icon>
+                        <span>Register</span>
+                    </a>
+                </nav>
+            </mat-toolbar-row>
+
+        </mat-toolbar>
+
+        <router-outlet></router-outlet>
+
+    </mat-sidenav-content>
+
+</mat-sidenav-container>

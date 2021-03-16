@@ -1,0 +1,93 @@
+<div *ngIf="pageRender; else elseBlock">
+
+    <div class="row center-xs middle-xs w-100">
+
+        <div class="col-xs-12 col-md-5 p-2">
+            <mat-paginator class="shadow" (page)="pageEvent($event)" [pageSizeOptions]="pageSizeOptions"
+                [pageSize]="pageRender.size" [length]="pageRender.totalElements" [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+
+        <div class="col-xs-12 col-md-10 p-3">
+            <div class="mat-elevation-z8 scroll">
+                <table mat-table [dataSource]="bills" class="w-100">
+
+                    <ng-container matColumnDef="Id">
+                        <th mat-header-cell *matHeaderCellDef> Id </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.id}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="User">
+                        <th mat-header-cell *matHeaderCellDef> User </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.user.fullname}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Address">
+                        <th mat-header-cell *matHeaderCellDef> Address </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.address}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Total">
+                        <th mat-header-cell *matHeaderCellDef> Total </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.total | currency}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Payment">
+                        <th mat-header-cell *matHeaderCellDef> Payment </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.payment.name}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Paid out">
+                        <th mat-header-cell *matHeaderCellDef> Paid out </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.paidOut === true ? 'Paid out': 'Dont paid out'}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="State">
+                        <th mat-header-cell *matHeaderCellDef> State </th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.state.name}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Create at">
+                        <th mat-header-cell *matHeaderCellDef>Create at</th>
+                        <td mat-cell *matCellDef="let bill">
+                            {{bill.createAt}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="Actions">
+                        <th mat-header-cell *matHeaderCellDef>Actions</th>
+                        <td mat-cell *matCellDef="let bill">
+                            <button *ngIf="(bill.payment.name === 'EN LINEA' && bill.paidOut === false)" mat-icon-button
+                                color="primary" aria-label="Paid bill" (click)="onClickPaidBill(bill)">
+                                <span>Paid</span>
+                                <mat-icon>paid</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<ng-template #elseBlock>
+    <app-loading></app-loading>
+</ng-template>

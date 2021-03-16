@@ -1,0 +1,178 @@
+<div class="row w-100 p-2">
+    <div class="col-xs-12 col-sm-6 center-xs start-sm">
+        <h2 mat-dialog-title *ngIf="!product; else elseBlockTitle">Create product</h2>
+        <ng-template #elseBlockTitle>
+            <h2 mat-dialog-title>Update product</h2>
+        </ng-template>
+    </div>
+    <div class="col-xs-12 col-sm-6 center-xs end-sm">
+        <button mat-raised-button color="warn" mat-dialog-close aria-label="Close create-update product modal">
+            <mat-icon>cancel</mat-icon>
+        </button>
+    </div>
+</div>
+
+<mat-dialog-content class="mat-typography">
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+
+        <div class="row center-xs middle-xs w-100">
+
+            <div class="col-xs-12 col-md-5">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Code</mat-label>
+
+                    <input matInput formControlName="code" name="code" placeholder="Code" minlength="2" maxlength="255"
+                        required />
+                    <mat-icon matSuffix>folder</mat-icon>
+
+                    <mat-hint>{{getCode().value.length}} of 255</mat-hint>
+
+                    <mat-error *ngIf="checkErrors(getCode(),'required')">Code is required</mat-error>
+                    <mat-error *ngIf="checkErrors(getCode(),'minlength')">Minimun length is 2</mat-error>
+                    <mat-error *ngIf="checkErrors(getCode(),'maxlength')">Maximun length is 255</mat-error>
+                </mat-form-field>
+
+            </div>
+
+            <div class="col-xs-12 col-md-5">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="name" name="name" placeholder="Name" minlength="2" maxlength="255"
+                        required />
+    
+                    <mat-icon matSuffix>folder</mat-icon>
+    
+                    <mat-hint>{{getName().value.length}} of 255</mat-hint>
+    
+                    <mat-error *ngIf="checkErrors(getName(),'required')">Name is required</mat-error>
+                    <mat-error *ngIf="checkErrors(getName(),'minlength')">Minimun length is 2</mat-error>
+                    <mat-error *ngIf="checkErrors(getName(),'maxlength')">Maximun length is 255</mat-error>
+                </mat-form-field>
+
+            </div>
+
+            <div class="col-xs-12 col-md-5">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Price</mat-label>
+    
+                    <input matInput formControlName="price" name="price" placeholder="Price" type="number" step=".01"
+                        min="0" required />
+    
+                    <mat-icon matSuffix>monetization_on</mat-icon>
+                    <mat-error *ngIf="checkErrors(getPrice(),'required')">Price is required</mat-error>
+                    <mat-error *ngIf="checkErrors(getPrice(),'min')">Minimun value is 0</mat-error>
+                </mat-form-field>
+    
+            </div>
+
+            <div class="col-xs-12 col-md-5">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Description</mat-label>
+    
+                    <textarea matInput formControlName="description" name="description" placeholder="Description"
+                        minlength="1" maxlength="1500" required></textarea>
+    
+                    <mat-icon matSuffix>description</mat-icon>
+    
+                    <mat-hint>{{getDescription().value.length}} of 1500</mat-hint>
+    
+                    <mat-error *ngIf="checkErrors(getDescription(),'required')">Description is required</mat-error>
+                    <mat-error *ngIf="checkErrors(getDescription(),'minlength')">Minimun value is 1</mat-error>
+                    <mat-error *ngIf="checkErrors(getDescription(),'maxlength')">Minimun value is 1500</mat-error>
+                </mat-form-field>
+
+            </div>
+
+            <div class="col-xs-12 col-md-5">
+                
+                <mat-form-field appearance="outline">
+
+                    <mat-label>Category</mat-label>
+                    <mat-select formControlName="category" required>
+                        <mat-option>None</mat-option>
+                        <mat-option *ngFor="let category of categoryOptions" [value]="category">{{category.code}} -
+                            {{category.name}}</mat-option>
+                    </mat-select>
+                    <mat-hint *ngIf="getCategory().value as category">Selected: {{category.code}}</mat-hint>
+    
+                    <mat-error *ngIf="checkErrors(getCategory(),'required')">Category is required</mat-error>
+    
+                </mat-form-field>
+
+            </div>
+
+            <!-- IMAGE -->
+
+            <div class="col-xs-12 col-md-5 p-1">
+
+                <div *ngIf="!image">
+
+                    <div *ngIf="!product">
+                        <label for="image" class="input-file-style p-1 text-align-center">Select image *</label>
+    
+                        <input formControlName="image" name="image" id="image" type="file"
+                            accept="image/png, image/jpeg, image/jpg" (change)="onSelectionImage($event)" required />
+                    </div>
+    
+                    <div *ngIf="product">
+                        <label for="image" class="input-file-style p-1 text-align-center"
+                            [style]="product.image?'display:none;':''">Select image *</label>
+    
+                        <input formControlName="image" name="image" id="image" type="file"
+                            accept="image/png, image/jpeg, image/jpg" (change)="onSelectionImage($event)"
+                            [required]="!product.image" />
+                    </div>
+    
+    
+                    <div *ngIf="getImage().dirty">
+                        <mat-error *ngIf="checkErrors(getImage(),'required')">Image required</mat-error>
+                        <mat-error *ngIf="checkErrors(getImage(),'invalidImageFormat')">Invalid image format
+                        </mat-error>
+                    </div>
+    
+                </div>
+                
+            </div> 
+
+        </div>
+
+        <div class="row center-xs w-100">
+            <button *ngIf="form.valid" mat-raised-button color="primary" type="submit" aria-label="Save product">
+                <mat-icon>save</mat-icon>
+            </button>
+        </div>
+
+    </form>
+
+    <mat-list>
+
+        <div *ngIf="image">
+            <div mat-subheader>Image</div>
+
+            <mat-list-item>
+                <button mat-icon-button color="warn" (click)="onClickCancelImage()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <div mat-line>{{image.name}}</div>
+            </mat-list-item>
+        </div>
+
+        <div *ngIf="product && product.image">
+            <div mat-subheader>Image</div>
+
+            <mat-list-item>
+                <button mat-icon-button color="warn" (click)="onClickCancelProductImage()">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <div mat-line>{{product.image}}</div>
+            </mat-list-item>
+        </div>
+
+    </mat-list>
+
+</mat-dialog-content>

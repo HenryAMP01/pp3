@@ -1,0 +1,11 @@
+.mat-header-cell{
+    text-align: center;
+}
+
+.mat-cell{
+    padding: 16px;
+}
+
+.scroll{
+    overflow: auto;
+}

@@ -1,0 +1,45 @@
+<div class="row w-100 p-2">
+    <div class="col-xs-12 col-sm-10 center-xs start-sm">
+        <h2 mat-dialog-title *ngIf="!authority; else elseBlockTitle">Create authority</h2>
+        <ng-template #elseBlockTitle>
+            <h2 mat-dialog-title>Update authority</h2>
+        </ng-template>
+    </div>
+    <div class="col-xs-12 col-sm-2 center-xs end-sm">
+        <button mat-raised-button color="warn" mat-dialog-close aria-label="Close create-update authority modal">
+            <mat-icon>cancel</mat-icon>
+        </button>
+    </div>
+</div>
+
+<mat-dialog-content class="mat-typography">
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit($event)">
+
+        <div class="row center-xs w-100">
+            <div class="col-xs-12 col-md-5">
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+
+                    <input matInput formControlName="name" name="name" placeholder="Name" minlength="3" maxlength="50"
+                        required />
+                    <mat-icon matSuffix>folder</mat-icon>
+
+                    <mat-hint>{{getName().value.length}} of 50</mat-hint>
+
+                    <mat-error *ngIf="checkErrors(getName(),'required')">Name is required</mat-error>
+                    <mat-error *ngIf="checkErrors(getName(),'minlength')">Minimun length is 3</mat-error>
+                    <mat-error *ngIf="checkErrors(getName(),'maxlength')">Maximun length is 50</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="row center-xs w-100">
+            <button *ngIf="form.valid" mat-raised-button color="primary" type="submit" aria-label="Save authority">
+                <mat-icon>save</mat-icon>
+            </button>
+        </div>
+
+    </form>
+
+</mat-dialog-content>

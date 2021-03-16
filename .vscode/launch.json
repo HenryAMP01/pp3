@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AppStoreApplication<appstore>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.study.appstore.AppStoreApplication",
+            "projectName": "appstore",
+            "args": ""
+        }
+    ]
+}

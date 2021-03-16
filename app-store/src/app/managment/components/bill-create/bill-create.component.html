@@ -1,0 +1,230 @@
+<div class="row center-xs middle-xs w-100">
+
+    <!-- Primera seccion -->
+
+    <div class="col-xs-12 col-md-3 px-3 py-3">
+        <mat-card [formGroup]="formBill">
+            <div class="row w-100">
+                <div class="col-xs-12">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Find user by email</mat-label>
+                        <input type="text" placeholder="Find user" aria-label="Find user" matInput
+                            formControlName="user" [matAutocomplete]="autoCompleteUser" (input)="onInputUser()">
+                        <mat-icon matSuffix>search</mat-icon>
+                        <mat-autocomplete #autoCompleteUser="matAutocomplete"
+                            (optionSelected)="optionSelectedUser($event)">
+                            <mat-option *ngFor="let user of userOptions" [value]="user">
+                                {{user.email}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-hint *ngIf="user">{{user.fullname}}</mat-hint>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-xs-12">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Payment</mat-label>
+                        <mat-select formControlName="payment" (valueChange)="optionSelectedPayment($event)" required>
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let payment of paymentOptions" [value]="payment">{{payment.id}} -
+                                {{payment.name}}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="checkErrors(getPayment(),'required')">Payment is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-xs-12">
+                    <mat-form-field appearance="outline">
+                        <mat-label>State</mat-label>
+                        <mat-select formControlName="state" (valueChange)="optionSelectedState($event)" required>
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let state of stateOptions" [value]="state">{{state.code}} -
+                                {{state.name}}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="checkErrors(getState(),'required')">State is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="col-xs-12" *ngIf="user">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Address</mat-label>
+                        <mat-select formControlName="address" (valueChange)="optionSelectedAddress($event)" required>
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let address of addressOptions" [value]="address">{{address.homeAddress}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="checkErrors(getAddress(),'required')">Address is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-xs-12 p-2" *ngIf="user">
+                    <button mat-raised-button [color]="hideCreateAddress ? 'primary':'warn'"
+                        aria-label="Activate form field to create address"
+                        (click)="hideCreateAddress = !hideCreateAddress"> {{hideCreateAddress ? 'Create new Address':
+                        'Hide field'}}</button>
+                </div>
+
+                <div class="col-xs-12" *ngIf="!hideCreateAddress && user">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Create address</mat-label>
+                        <input type="text" placeholder="Address" aria-label="Create address for a user" matInput
+                            [formControl]="createAddress" minlength="5" maxlength="150" />
+                        <button *ngIf="createAddress.valid" mat-icon-button matSuffix color="primary"
+                            (click)="onClickCreateAddress()" aria-label="Add new address">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        <mat-error *ngIf="checkErrors(getCreateAddress(),'minlength')">Minimun length is 5
+                        </mat-error>
+                        <mat-error *ngIf="checkErrors(getCreateAddress(),'maxlength')">Maximum length is 150
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+
+                <div class="col-xs-12">
+                    <mat-radio-group formControlName="paidOut" required>
+                        <mat-radio-button class="p-1" *ngFor="let paidOut of paidOutOptions" [value]="paidOut">
+                            {{paidOut === false ? 'Dont paid out' : 'Paid out'}}
+                        </mat-radio-button>
+                        <mat-error *ngIf="checkErrors(getPaidOut(),'required')">Paid out is required
+                        </mat-error>
+                    </mat-radio-group>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+
+    <!-- Segunda seccion -->
+
+    <div class="col-xs-12 col-md-6 px-3 py-3">
+        <app-search-product-to-bill (product)="onProductEmited($event)"></app-search-product-to-bill>
+        <div class="mat-elevation-z8 scroll" *ngIf="billsProducts.length > 0">
+            <table mat-table [dataSource]="billsProducts" class="w-100">
+                <ng-container matColumnDef="Product">
+                    <th mat-header-cell *matHeaderCellDef> Product </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        <img [src]="('assets/images/' + billProduct.product.image)" [alt]="billProduct.product.image">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.product.name}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Price">
+                    <th mat-header-cell *matHeaderCellDef> Price </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.product.price | currency}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Amount">
+                    <th mat-header-cell *matHeaderCellDef> Amount </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.amount}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Choice amount">
+                    <th mat-header-cell *matHeaderCellDef> Choice amount </th>
+                    <td mat-cell *matCellDef="let billProduct; index as index">
+                        <div [formGroup]="billsProductsForm">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Amount</mat-label>
+                                <input matInput [formControlName]="billProduct.product.code" name="amount" type="number"
+                                    placeholder="Amount" min="1" required
+                                    (input)="onInputFieldAmount(billProduct, getReactiveControl(billProduct.product.code))" />
+                                <button mat-icon-button matSuffix color="warn" aria-label="Remove bill-product"
+                                    (click)="onClickSpliceBillProduct(index, billProduct.product.code)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <mat-error *ngIf="checkErrors(getReactiveControl(billProduct.product.code),'required')">
+                                    Amount is required
+                                </mat-error>
+                                <mat-error *ngIf="checkErrors(getReactiveControl(billProduct.product.code),'min')">
+                                    Minimun value is 1
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tercera seccion -->
+
+    <div class="col-xs-12 col-md-3 px-3 py-3">
+        <mat-card>
+            <mat-list>
+                <div *ngIf="user">
+                    <div mat-subheader>Client</div>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>Name</div>
+                        <div mat-line>{{user.fullname}}</div>
+                    </mat-list-item>
+                    <mat-divider></mat-divider>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>Email</div>
+                        <div mat-line>{{user.email}}</div>
+                    </mat-list-item>
+                </div>
+
+                <div *ngIf="payment">
+                    <div mat-subheader>Payment</div>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>Payment</div>
+                        <div mat-line>{{payment.name}}</div>
+                    </mat-list-item>
+                </div>
+
+                <div *ngIf="state">
+                    <div mat-subheader>State</div>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>State</div>
+                        <div mat-line>{{state.name}}</div>
+                    </mat-list-item>
+                </div>
+
+                <div *ngIf="address">
+                    <div mat-subheader>Address</div>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>Address</div>
+                        <div mat-line>{{address.homeAddress}}</div>
+                    </mat-list-item>
+                </div>
+
+                <div mat-subheader>Paid out and total</div>
+                <mat-list-item>
+                    <mat-icon mat-list-icon>folder</mat-icon>
+                    <div mat-line>Paid out</div>
+                    <div mat-line>{{getPaidOut().value === false ? 'Dont paid out' : 'Paid out'}}</div>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+                <mat-list-item>
+                    <mat-icon mat-list-icon>folder</mat-icon>
+                    <div mat-line>Total</div>
+                    <div mat-line>{{priceBill | currency}}</div>
+                </mat-list-item>
+            </mat-list>
+
+            <mat-card-actions class="text-align-center"
+                *ngIf="formBill.valid && billsProducts.length > 0 && user && payment && state && address ">
+                <button mat-raised-button color="primary" (click)="generateBill()">Generate bill</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+
+</div>

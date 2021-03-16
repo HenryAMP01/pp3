@@ -1,0 +1,13 @@
+
+#image{
+    display: none;
+}
+
+.input-file-style{
+    display: block;
+    background-color: #3f51b5;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+

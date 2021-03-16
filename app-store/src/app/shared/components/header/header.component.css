@@ -1,0 +1,18 @@
+
+.mat-sidenav-container{
+    height: 100%;
+}
+
+.mat-sidenav{
+    overflow-y: auto;
+}
+
+.mat-toolbar{
+    position: sticky;    
+    top: 0;
+    overflow-x: auto;
+    z-index: 2;
+}
+.spacer{
+    flex: 1 1 auto;
+}

@@ -1,0 +1,41 @@
+<div *ngIf="pageRender; else elseBlock">
+
+    <div class="row center-xs w-100">
+        <div class="col-xs-12 col-md-5 p-2">
+            <mat-paginator [showFirstLastButtons]="true" [length]="pageRender.totalElements"
+                [pageSize]="pageRender.size" [pageSizeOptions]="pageSizeOptions" (page)="pageEvent($event)"
+                class="shadow">
+            </mat-paginator>
+        </div>
+    </div>
+
+    <div class="row center-xs middle-xs w-100">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 p-2" *ngFor="let product of products">
+
+            <mat-card class="shadow-hover">
+                <mat-card-header>
+                    <mat-card-title>{{product.name}}</mat-card-title>
+                    <mat-card-subtitle>Code: {{product.code}}</mat-card-subtitle>
+                </mat-card-header>
+
+                <img [src]="('assets/images/' + product.image)" [alt]="product.code">
+
+                <mat-card-content class="p-2">
+                    <strong>Price: </strong>{{product.price | currency}}
+                </mat-card-content>
+
+                <mat-card-actions>
+                    <button mat-raised-button color="primary" (click)="onClickAddProductInUserCart(product)">Add to car</button>
+                    <a mat-raised-button [routerLink]="['/store/products/detail', product.id]">Detail</a>
+                </mat-card-actions>
+
+            </mat-card>
+
+        </div>
+    </div>
+
+</div>
+
+<ng-template #elseBlock>
+    <app-loading></app-loading>
+</ng-template>

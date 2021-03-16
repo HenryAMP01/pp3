@@ -1,0 +1,292 @@
+<div class="row center-xs middle-xs w-100" *ngIf="billsProducts.length > 0">
+
+    <!-- Primera seccion -->
+
+    <div class="col-xs-12 col-md-3 px-3 py-3">
+        <mat-card [formGroup]="formBill">
+            <div class="row w-100">
+
+                <div class="col-xs-12">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Payment</mat-label>
+                        <mat-select formControlName="payment" (valueChange)="optionSelectedPayment($event)" required>
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let payment of paymentOptions" [value]="payment">{{payment.id}} -
+                                {{payment.name}}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="checkErrors(getPayment(),'required')">Payment is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-xs-12">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Address</mat-label>
+                        <mat-select formControlName="address" (valueChange)="optionSelectedAddress($event)" required>
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let address of addresses" [value]="address">{{address.homeAddress}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="checkErrors(getAddress(),'required')">Address is required</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="col-xs-12 p-2">
+                    <button mat-raised-button [color]="hideCreateAddress ? 'primary':'warn'"
+                        aria-label="Activate form field to create address"
+                        (click)="hideCreateAddress = !hideCreateAddress"> {{hideCreateAddress ? 'Create new Address':
+                        'Hide field'}}</button>
+                </div>
+
+                <div class="col-xs-12" *ngIf="!hideCreateAddress && user">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Create address</mat-label>
+                        <input type="text" placeholder="Address" aria-label="Create address for a user" matInput
+                            [formControl]="createAddress" minlength="5" maxlength="150" />
+                        <button *ngIf="createAddress.valid" mat-icon-button matSuffix color="primary"
+                            (click)="onClickCreateAddress()" aria-label="Add new address">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                        <mat-error *ngIf="checkErrors(getCreateAddress(),'minlength')">Minimun length is 5
+                        </mat-error>
+                        <mat-error *ngIf="checkErrors(getCreateAddress(),'maxlength')">Maximum length is 150
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+
+    <!-- Segunda seccion -->
+
+    <div class="col-xs-12 col-md-6 px-3 py-3">
+        <app-search-product-to-bill (product)="onProductEmited($event)"></app-search-product-to-bill>
+        <div class="mat-elevation-z8 scroll" *ngIf="billsProducts.length > 0">
+            <table mat-table [dataSource]="billsProducts" class="w-100">
+                <ng-container matColumnDef="Product">
+                    <th mat-header-cell *matHeaderCellDef> Product </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        <img [src]="('assets/images/' + billProduct.product.image)" [alt]="billProduct.product.image">
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.product.name}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Price">
+                    <th mat-header-cell *matHeaderCellDef> Price </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.product.price | currency}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Amount">
+                    <th mat-header-cell *matHeaderCellDef> Amount </th>
+                    <td mat-cell *matCellDef="let billProduct">
+                        {{billProduct.amount}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="Choice amount">
+                    <th mat-header-cell *matHeaderCellDef> Choice amount </th>
+                    <td mat-cell *matCellDef="let billProduct; index as index">
+                        <div [formGroup]="billsProductsForm">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Amount</mat-label>
+                                <input matInput [formControlName]="billProduct.product.code" name="amount" type="number"
+                                    placeholder="Amount" min="1" required
+                                    (input)="onInputFieldAmount(billProduct, getReactiveControlBillsProducts(billProduct.product.code))" />
+                                <button mat-icon-button matSuffix color="warn" aria-label="Remove bill-product"
+                                    (click)="onClickSpliceBillProduct(index, billProduct.product.code)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                <mat-error *ngIf="checkErrors(getReactiveControlBillsProducts(billProduct.product.code),'required')">
+                                    Amount is required
+                                </mat-error>
+                                <mat-error *ngIf="checkErrors(getReactiveControlBillsProducts(billProduct.product.code),'min')">
+                                    Minimun value is 1
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tercera seccion -->
+
+    <div class="col-xs-12 col-md-3 px-3 py-3">
+        <mat-card>
+            <mat-list>
+                <div *ngIf="user">
+                    <div mat-subheader>Client</div>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>Name</div>
+                        <div mat-line>{{user.fullname}}</div>
+                    </mat-list-item>
+                    <mat-divider></mat-divider>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>Email</div>
+                        <div mat-line>{{user.email}}</div>
+                    </mat-list-item>
+                </div>
+
+                <div *ngIf="payment">
+                    <div mat-subheader>Payment</div>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>Payment</div>
+                        <div mat-line>{{payment.name}}</div>
+                    </mat-list-item>
+                </div>
+
+                <div *ngIf="address">
+                    <div mat-subheader>Address</div>
+                    <mat-list-item>
+                        <mat-icon mat-list-icon>folder</mat-icon>
+                        <div mat-line>Address</div>
+                        <div mat-line>{{address.homeAddress}}</div>
+                    </mat-list-item>
+                </div>
+                <mat-divider></mat-divider>
+                <mat-list-item>
+                    <mat-icon mat-list-icon>folder</mat-icon>
+                    <div mat-line>Total</div>
+                    <div mat-line>{{priceBill | currency}}</div>
+                </mat-list-item>
+            </mat-list>
+
+            <mat-card-actions class="text-align-center"
+                *ngIf="formBill.valid && billsProducts.length > 0 && user && payment && address ">
+                <button mat-raised-button color="primary" (click)="generateBill()">Generate bill</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+
+</div>
+
+<!-- Seccion de perfil de usuario -->
+
+<div class="row w-100 center-xs middle-xs py-5">
+    <div class="col-xs-12 col-md-5 py-5">
+
+        <mat-card>
+            <h1 class="p-1">Update information</h1>
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit($event)" class="p-2">
+
+                <div class="row w-100">
+
+                    <div class="col-xs-12 p-1">
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Email</mat-label>
+
+                            <input matInput type="email" formControlName="email" name="email" placeholder="Email"
+                                minlength="6" maxlength="255" (input)="onInputEmail()" required />
+                            <mat-icon matSuffix>folder</mat-icon>
+
+                            <mat-hint>{{getEmail().value.length}} of 255</mat-hint>
+
+                            <mat-error *ngIf="checkErrors(getEmail(),'required')">Email is required</mat-error>
+                            <mat-error *ngIf="checkErrors(getEmail(),'minlength')">Minimun length is 6</mat-error>
+                            <mat-error *ngIf="checkErrors(getEmail(),'maxlength')">Maximun length is 255</mat-error>
+                            <mat-error *ngIf="checkErrors(getEmail(),'email')">Bad format email</mat-error>
+                        </mat-form-field>
+
+                    </div>
+
+                    <div class="col-xs-12 p-1">
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Fullname</mat-label>
+
+                            <input matInput formControlName="fullname" name="fullname" placeholder="Fullname"
+                                minlength="3" maxlength="255" (input)="onInputFullname()" required />
+                            <mat-icon matSuffix>folder</mat-icon>
+
+                            <mat-hint>{{getFullname().value.length}} of 255</mat-hint>
+
+                            <mat-error *ngIf="checkErrors(getFullname(),'required')">Fullname is required</mat-error>
+                            <mat-error *ngIf="checkErrors(getFullname(),'minlength')">Minimun length is 3</mat-error>
+                            <mat-error *ngIf="checkErrors(getFullname(),'maxlength')">Maximun length is 255</mat-error>
+                        </mat-form-field>
+
+                    </div>
+
+                    <div class="col-xs-12 p-1">
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Password</mat-label>
+
+                            <input matInput [type]="hide ? 'password': 'text'" formControlName="password"
+                                name="password" placeholder="Password" minlength="8" maxlength="255"
+                                (input)="onInputPassword()" required />
+
+                            <button mat-icon-button matSuffix (click)="hidePassword($event)"
+                                aria-label="Show or ocult password">
+                                <mat-icon>{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                            </button>
+
+                            <mat-hint>{{getPassword().value.length}} of 255</mat-hint>
+
+                            <mat-error *ngIf="checkErrors(getPassword(),'required')">Password is required</mat-error>
+                            <mat-error *ngIf="checkErrors(getPassword(),'minlength')">Minimun length is 8</mat-error>
+                            <mat-error *ngIf="checkErrors(getPassword(),'maxlength')">Maximun length is 255</mat-error>
+                        </mat-form-field>
+
+                    </div>
+
+                </div>
+
+                <div class="row center-xs w-100 p-2">
+                    <button *ngIf="form.valid" mat-raised-button color="primary" type="submit"
+                        aria-label="Save authority">
+                        Update info
+                    </button>
+                </div>
+
+            </form>
+        </mat-card>
+
+    </div>
+
+   <div class="col-xs-12 col-md-5 py-5">
+        <mat-card>
+            <h1 class="p-1">Addresses</h1>
+            <div [formGroup]="addressForm">
+                <div class="row w-100 center-xs">
+                    <div class="col-xs-12" *ngFor="let address of addresses; index as index">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Home Address</mat-label>
+                            <input matInput [formControlName]="address.id.toString(10)" [name]="address.id.toString(10)"
+                                placeholder="Home address" minlength="5" maxlength="255" required />
+                            <button mat-icon-button matSuffix color="warn" aria-label="Remove bill-product"
+                                (click)="deleteAddressById(index, address.id.toString(10))">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                            <mat-error *ngIf="checkErrors(getReactiveControlAddresses(address.id.toString(10)),'required')">
+                                Home address is required
+                            </mat-error>
+                            <mat-error *ngIf="checkErrors(getReactiveControlAddresses(address.id.toString(10)),'minlength')">
+                                Minimun length is 5
+                            </mat-error>
+                            <mat-error *ngIf="checkErrors(getReactiveControlAddresses(address.id.toString(10)),'maxlength')">
+                                Maximum length is 255
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+        </mat-card>
+    </div>
+</div>
