@@ -15,7 +15,7 @@ export class RegisterComponent implements OnInit {
 
   // Variables
 
-  image = 'assets/statics/welcome.jpg';
+  image = 'assets/statics/welcome1.jpg';
   hide = true;
   form: FormGroup;
 

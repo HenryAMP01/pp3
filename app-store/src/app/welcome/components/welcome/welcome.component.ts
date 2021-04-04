@@ -13,7 +13,6 @@ export class WelcomeComponent implements OnInit, AfterViewInit {
 
   images: string[] = [
     'assets/statics/welcome1.jpg',
-    'assets/statics/welcome2.jpg',
     'assets/statics/welcome3.jpg',
   ];
 

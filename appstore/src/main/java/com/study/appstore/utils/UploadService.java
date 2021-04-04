@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UploadService {
 
-    private static final String UPLOAD_PATH = "C:/Users/henry/Documentos/pp3-project/app-store/src/assets/images";
+    private static final String UPLOAD_PATH = "C:/Users/henry/Documents/pp3-project/app-store/src/assets/images";
 
     private static final Map<String, String> VALID_FORMATS = Collections
             .unmodifiableMap(Map.of("image/jpg", ".jpg", "image/jpeg", ".jpeg", "image/png", ".png"));
